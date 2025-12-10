@@ -117,7 +117,7 @@ Singleton {
             const match = root.ddcMonitors.find(m => m.name === screen.name && !root.monitors.slice(0, root.monitors.indexOf(this)).some(mon => mon.busNum === m.busNum));
             isDdc = !!match;
             busNum = match?.busNum ?? "";
-            initProc.command = isDdc ? ["ddcutil", "-b", busNum, "getvcp", "10", "--brief"] : ["sh", "-c", `echo "a b c $(brightnessctl g) $(brightnessctl m)"`];
+            initProc.command = isDdc ? ["ddcutil", "-b", busNum, "getvcp", "10", "--brief"] : ["sh", "-c", `echo "a b c $(brightnessctl -d amdgpu_bl1 g) $(brightnessctl -d amdgpu_bl1 m)"`];
             initProc.running = true;
         }
 
@@ -154,7 +154,7 @@ Singleton {
                 const valuePercentNumber = Math.floor(brightnessValue * 100);
                 let valuePercent = `${valuePercentNumber}%`;
                 if (valuePercentNumber == 0) valuePercent = "1"; // Prevent fully black
-                setProc.command = ["brightnessctl", "--class", "backlight", "s", valuePercent, "--quiet"];
+                setProc.command = ["brightnessctl","-d","amdgpu_bl1", "--class", "backlight", "s", valuePercent, "--quiet"];
                 setProc.startDetached();
             }
         }
